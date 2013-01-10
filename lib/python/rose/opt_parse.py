@@ -126,6 +126,11 @@ class RoseOptionParser(OptionParser):
                        {"action": "store_true",
                         "dest": "downgrade",
                         "help": "Downgrade instead of upgrade."}],
+               "env_var_process_mode": [
+                       ["--env-var-process", "-E"],
+                       {"action": "store_true",
+                        "dest": "env_var_process_mode",
+                        "help": "Process environment variable syntax."}],
                "files": [
                        ["--file", "-f"],
                        {"action": "append",
@@ -226,7 +231,7 @@ class RoseOptionParser(OptionParser):
                         "help": "Operate on a config file's metadata."}],
                "meta_key": [
                        ["--meta-key"],
-                       {"metavar": "METAKEY",
+                       {"metavar": "KEY",
                         "help": "Specify a meta-key to search for."}],
                "meta_path": [
                        ["--meta-path", "-M"],
