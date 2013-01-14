@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 #-------------------------------------------------------------------------------
 # (C) British Crown Copyright 2012-3 Met Office.
 # 
@@ -17,30 +17,26 @@
 # You should have received a copy of the GNU General Public License
 # along with Rose. If not, see <http://www.gnu.org/licenses/>.
 #-------------------------------------------------------------------------------
-# NAME
-#     rose suite-gcontrol
-#
-# SYNOPSIS
-#     rose suite-gcontrol [OPTIONS] [--name=SUITE-NAME] [-- EXTRA-ARGS ...]
-#
-# DESCRIPTION
-#     Launch suite engine's suite control GUI for a suite.
-#
-#     If --name=SUITE-NAME is not specified, the basename of $PWD is assumed to
-#     be the suite name.
-#
-#     This wrapper is to deal with the use case where a suite may be running on
-#     dedicated servers at a site. The wrapper will make an attempt to detect
-#     where the suite is running or last run.
-#
-# OPTIONS
-#     --host=HOST
-#         Specify a host.
-#     --name=SUITE-NAME
-#         Specify the suite name.
-#     --quiet, -q
-#         Decrement verbosity.
-#     --verbose, -v
-#         Increment verbosity.
+# Test "rose env-cat" with no file.
 #-------------------------------------------------------------------------------
-exec python -m rose.suite_control gcontrol "$@"
+. $(dirname $0)/test_header
+#-------------------------------------------------------------------------------
+tests 6
+#-------------------------------------------------------------------------------
+# Pipe from /dev/null
+TEST_KEY=$TEST_KEY_BASE
+setup
+run_pass "$TEST_KEY" rose env-cat </dev/null
+file_cmp "$TEST_KEY.out" "$TEST_KEY.out" </dev/null
+file_cmp "$TEST_KEY.err" "$TEST_KEY.err" </dev/null
+teardown
+#-------------------------------------------------------------------------------
+# Arg 1 is /dev/null
+TEST_KEY=$TEST_KEY_BASE-arg
+setup
+run_pass "$TEST_KEY" rose env-cat /dev/null
+file_cmp "$TEST_KEY.out" "$TEST_KEY.out" </dev/null
+file_cmp "$TEST_KEY.err" "$TEST_KEY.err" </dev/null
+teardown
+#-------------------------------------------------------------------------------
+exit

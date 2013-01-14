@@ -83,6 +83,10 @@
 
       <dd>(=config-edit)</dd>
 
+      <dt><a href="#rose-env-cat">rose env-cat</a></dt>
+
+      <dd>Substitute environment variables in input files and print.</dd>
+
       <dt><a href="#rose-host-select">rose host-select</a></dt>
 
       <dd>Select a host from a set of groups or names by load or by
@@ -134,6 +138,14 @@
       <dt><a href="#rose-suite-scan">rose suite-scan</a></dt>
 
       <dd>Scan for running suites.</dd>
+
+      <dt><a href="#rose-suite-shutdown">rose suite-shutdown</a></dt>
+
+      <dd>Shutdown a running suite.</dd>
+
+      <dt><a href="#rose-suite-stop">rose suite-stop</a></dt>
+
+      <dd>(=suite-shutdown)</dd>
 
       <dt><a href="#rose-task-env">rose task-env</a></dt>
 
@@ -406,9 +418,9 @@
       <dd>Print the value of <var>OPTION</var> in <var>SECTION</var> of the 
       metadata associated with the specified config <var>FILE</var>.</dd>
       
-      <dt><kbd>rose config --meta-key=FLAG</kbd></dt>
+      <dt><kbd>rose config --meta-key=KEY</kbd></dt>
       
-      <dd>Print the value of a specified metadata <var>FLAG<var>.</dd>
+      <dd>Print the value of a specified metadata <var>KEY<var>.</dd>
     </dl>
 
     <h3>DESCRIPTION</h3>
@@ -425,6 +437,11 @@
       <dt><kbd>--default</kbd></dt>
 
       <dd>Specify a default value.</dd>
+
+      <dt><kbd>--env-var-process, -E</kbd></dt>
+
+      <dd>Process environment variable substitution. (Only works when returning
+      a string value.)</dd>
 
       <dt><kbd>--file=FILE, -f FILE</kbd></dt>
 
@@ -449,10 +466,11 @@
       <dd>If specified, operate on the metadata associated with the 
       configuration <var>FILE</var>.</dd>
 
-     <dt><kbd>--meta-key</kbd></dt>
+     <dt><kbd>--meta-key=KEY</kbd></dt>
 
-     <dd>If specified, prints the value of a specified metadata flag.
-     Cannot be used in conjunction with <kbd>--file</kbd>.</dd>
+     <dd>If specified, prints the value of a specified metadata flag
+     <var>KEY</var>. Cannot be used in conjunction with
+     <kbd>--file=FILE</kbd>.</dd>
 
       <dt><kbd>--print-ignored, -i</kbd></dt>
 
@@ -606,6 +624,40 @@
     <h2 id="rose-edit">rose edit</h2>
 
     <p>See <a href="#rose-config-edit">rose config-edit</a>.</p>
+
+    <h2 id="rose-env-cat">rose env-cat</h2>
+
+    <h3>NAME</h3>
+
+    <p><kbd>rose env-cat</kbd></p>
+
+    <h3>SYNOPSIS</h3>
+
+    <p><kbd>rose env-cat [OPTIONS] [FILE ...]</kbd></p>
+
+    <h3>DESCRIPTION</h3>
+
+    <p>Substitute environment variables in input files and print.</p>
+
+    <p>If no argument is specified, read from <var>STDIN</var>. One
+    <var>FILE</var> argument may be <kbd>-</kbd>, which means read from
+    <var>STDIN</var>.</p>
+
+    <p>The command will look for <kbd>$NAME</kbd> or <kbd>${NAME}</kbd> syntax
+    and substitute them with the value of the environment variable
+    <var>NAME</var>. A backslash in front of the syntax, e.g. <kbd>\$NAME</kbd>
+    or <kbd>\${NAME}</kbd> will escape the substitution.</p>
+
+    <h3>OPTIONS</h3>
+
+    <dl>
+      <dt><kbd>--unbound=STRING</kbd>, <kbd>--undef=STRING</kbd></dt>
+
+      <dd>The command will normally fail on unbound (or undefined) variables.
+      If this option is specified, the command will substitute an unbound
+      variable with the value of <var>STRING</var>, (which can be an empty
+      string), instead of failing.</dd>
+    </dl>
 
     <h2 id="rose-host-select">rose host-select</h2>
 
@@ -820,12 +872,57 @@
 
     <p><kbd>rose mpi-launch COMMAND [ARGUMENTS ...]</kbd></p>
 
+    <h3>DESCRIPTION</h3>
+
+    <p>Provide a portable way to launch an MPI command.</p>
+
     <h3>ARGUMENTS</h3>
 
     <dl>
       <dt><var>COMMAND</var></dt>
 
       <dd>Command to call. Subsequent arguments are passed to the command.</dd>
+    </dl>
+
+    <h3>OPTIONS</h3>
+
+    <dl>
+      <dt><kbd>--debug</kbd></dt>
+
+      <dd>Switch on xtrace, i.e. <code>set -x</code>.</dd>
+
+      <dt><kbd>--quiet, -q</kbd></dt>
+
+      <dd>Decrement verbosity.</dd>
+
+      <dt><kbd>--verbose; -v</kbd></dt>
+
+      <dd>Increment verbosity. Print command on <var>-v</var> mode. Run
+      <code>printenv</code>, <code>ldd</code> on a binary executable, and
+      <code>ulimit -a</code> on <var>-v -v</var> mode.</dd>
+    </dl>
+
+    <h3>CONFIGURATION</h3>
+
+    <p>The command reads its settings from the <var>[rose-host-select]</var>
+    section in <var>$ROSE_HOME/etc/rose.conf</var> and
+    <var>$HOME/.metomi/rose.conf</var>. All settings are optional. Valid
+    settings are:</p>
+
+    <dl>
+      <dt><kbd>launcher-list=LIST</kbd></dt>
+
+      <dd>Specify a list of launcher commands.</dd>
+
+      <dt><kbd>launcher-preopts.LAUNCHER=OPTIONS</kbd></dt>
+
+      <dd>Specify the default options of a <var>LAUNCHER</var> before the
+      COMMAND.</dd>
+
+      <dt><kbd>launcher-postopts.LAUNCHER=OPTIONS</kbd></dt>
+
+      <dd>Specify the default options of a <var>LAUNCHER</var> after the
+      COMMAND.</dd>
     </dl>
 
     <h3>ENVIRONMENT</h3>
@@ -843,11 +940,6 @@
       <dt><kbd>optional ROSE_LAUNCHER_LIST</kbd></dt>
 
       <dd>Specifies an alternative list of launchers.</dd>
-
-      <dt><kbd>optional ROSE_LAUNCHER_MPICH</kbd></dt>
-
-      <dd>Specifies the mpich launcher program to run the prog. Default is
-      <var>mpiexec</var>.</dd>
 
       <dt><kbd>optional ROSE_LAUNCHER_PREOPTS</kbd></dt>
 
@@ -869,10 +961,6 @@
 
       <dd>Specifies the number of processors to run on. Default is 1.</dd>
     </dl>
-
-    <h3>DESCRIPTION</h3>
-
-    <p>Provide a portable way to launch an MPI command.</p>
 
     <h3>DIAGNOSTICS</h3>
 
@@ -989,16 +1077,15 @@
 
     <h3>SYNOPSIS</h3>
 
-    <p><kbd>rose suite-gcontrol [OPTIONS] [SUITE]</kbd></p>
-
-    <p><kbd>rose suite-gcontrol [OPTIONS] -- GCONTROL-ARGS SUITE</kbd></p>
+    <p><kbd>rose suite-gcontrol [OPTIONS] [--name=SUITE-NAME] [-- EXTRA-ARGS
+    ...]</kbd></p>
 
     <h3>DESCRIPTION</h3>
 
     <p>Launch suite engine's suite control GUI for a suite.</p>
 
-    <p>If no argument is specified, the basename of <var>PWD</var> is assumed
-    to be the suite name.</p>
+    <p>If <kbd>--name=SUITE-NAME</kbd> is not specified, the basename of
+    <var>$PWD</var> is assumed to be the suite name.</p>
 
     <p>This wrapper is to deal with the use case where a suite may be running
     on dedicated servers at a site. The wrapper will make an attempt to detect
@@ -1010,6 +1097,10 @@
       <dt><kbd>--host=HOST</kbd></dt>
 
       <dd>Specify a host.</dd>
+
+      <dt><kbd>--name=SUITE-NAME</kbd></dt>
+
+      <dd>Specify the suite name.</dd>
 
       <dt><kbd>--quiet, -q</kbd></dt>
 
@@ -1318,6 +1409,56 @@
 
       <dd>Increment verbosity.</dd>
     </dl>
+
+    <h2 id="rose-suite-shutdown">rose suite-shutdown</h2>
+
+    <h3>NAME</h3>
+
+    <p><kbd>rose suite-shutdown</kbd></p>
+
+    <h3>SYNOPSIS</h3>
+
+    <p><kbd>rose suite-shutdown [OPTIONS] [--name=SUITE-NAME] [-- EXTRA-ARGS
+    ...]</kbd></p>
+
+    <h3>DESCRIPTION</h3>
+
+    <p>Shutdown a running suite.</p>
+
+    <p>If <kbd>--name=SUITE-NAME</kbd> is not specified, the basename of
+    <var>$PWD</var> is assumed to be the suite name.</p>
+
+    <p>This wrapper is to deal with the use case where a suite may be running
+    on dedicated servers at a site. The wrapper will make an attempt to detect
+    where the suite is running or last run.</p>
+
+    <h3>OPTIONS</h3>
+
+    <dl>
+      <dt><kbd>--host=HOST</kbd></dt>
+
+      <dd>Specify a host.</dd>
+
+      <dt><kbd>--name=SUITE-NAME</kbd></dt>
+
+      <dd>Specify the suite name.</dd>
+
+      <dt><kbd>--non-interactive, --yes, -y</kbd></dt>
+
+      <dd>Switch off interactive prompting (=answer yes to everything).</dd>
+
+      <dt><kbd>--quiet, -q</kbd></dt>
+
+      <dd>Decrement verbosity.</dd>
+
+      <dt><kbd>--verbose, -v</kbd></dt>
+
+      <dd>Increment verbosity.</dd>
+    </dl>
+
+    <h2 id="rose-suite-stop">rose suite-stop</h2>
+
+    <p>See <a href="#rose-suite-shutdown">rose suite-shutdown</a>.</p>
 
     <h2 id="rose-task-env">rose task-env</h2>
 

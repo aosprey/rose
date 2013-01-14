@@ -18,29 +18,26 @@
 # along with Rose. If not, see <http://www.gnu.org/licenses/>.
 #-------------------------------------------------------------------------------
 # NAME
-#     rose suite-gcontrol
+#     rose env-cat
 #
 # SYNOPSIS
-#     rose suite-gcontrol [OPTIONS] [--name=SUITE-NAME] [-- EXTRA-ARGS ...]
+#     rose env-cat [OPTIONS] [FILE ...]
 #
 # DESCRIPTION
-#     Launch suite engine's suite control GUI for a suite.
+#     Substitute environment variables in input files and print.
 #
-#     If --name=SUITE-NAME is not specified, the basename of $PWD is assumed to
-#     be the suite name.
+#     If no argument is specified, read from STDIN. One FILE argument may be
+#     "-", which means read from STDIN.
 #
-#     This wrapper is to deal with the use case where a suite may be running on
-#     dedicated servers at a site. The wrapper will make an attempt to detect
-#     where the suite is running or last run.
+#     The command will look for $NAME or ${NAME} syntax and substitute them
+#     with the value of the environment variable NAME. A backslash in front of
+#     the syntax, e.g. \$NAME or \${NAME} will escape the substitution.
 #
 # OPTIONS
-#     --host=HOST
-#         Specify a host.
-#     --name=SUITE-NAME
-#         Specify the suite name.
-#     --quiet, -q
-#         Decrement verbosity.
-#     --verbose, -v
-#         Increment verbosity.
+#     --unbound=STRING, --undef=STRING
+#         The command will normally fail on unbound (or undefined) variables.
+#         If this option is specified, the command will substitute an unbound
+#         variable with the value of STRING, (which can be an empty string),
+#         instead of failing.
 #-------------------------------------------------------------------------------
-exec python -m rose.suite_control gcontrol "$@"
+exec python -m rose.env_cat "$@"

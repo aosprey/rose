@@ -156,7 +156,7 @@ class CylcProcessor(SuiteEngineProcessor):
         if callable(self.event_handler):
             return self.event_handler(*args, **kwargs)
 
-    def launch_gcontrol(self, suite_name, host=None, args=None):
+    def gcontrol(self, suite_name, host=None, args=None):
         """Launch control GUI for a suite_name running at a host."""
         log_dir = self.get_suite_dir(suite_name, "log")
         if not host:
@@ -367,9 +367,15 @@ class CylcProcessor(SuiteEngineProcessor):
                 sleep(0.1)
         return ret
 
-    def shutdown(self, suite):
+    def shutdown(self, suite_name, host=None, args=None):
         """Shut down the suite."""
-        self.popen("cylc", "shutdown", "--force", suite)
+        command = ["cylc", "shutdown", "--force"]
+        if host:
+            command += ["--host=%s" % host]
+        if args:
+            command += args
+        command += [suite_name]
+        self.popen(*command)
 
     def validate(self, suite_name):
         """(Re-)register and validate a suite."""
@@ -387,7 +393,12 @@ class CylcProcessor(SuiteEngineProcessor):
             suite_dir_old = None
         if suite_dir_old is None:
             self.popen("cylc", "register", suite_name, suite_dir)
-        passphrase_dir = os.path.join(home, ".cylc", suite_name)
+        passphrase_dir_root = os.path.join(home, ".cylc")
+        for name in os.listdir(passphrase_dir_root):
+            p = os.path.join(passphrase_dir_root, name)
+            if os.path.islink(p) and not os.path.exists(p):
+                self.fs_util.delete(p)
+        passphrase_dir = os.path.join(passphrase_dir_root, suite_name)
         self.fs_util.symlink(suite_dir, passphrase_dir)
         self.popen("cylc", "validate", suite_name)
 
