@@ -1,3 +1,4 @@
+#!/bin/bash
 #-------------------------------------------------------------------------------
 # (C) British Crown Copyright 2012-3 Met Office.
 # 
@@ -16,13 +17,4 @@
 # You should have received a copy of the GNU General Public License
 # along with Rose. If not, see <http://www.gnu.org/licenses/>.
 #-------------------------------------------------------------------------------
-# Example Apache module configuration file for serving Rosie via mod_wsgi
-# Typically, this file should be installed in /etc/httpd/conf.d/rosie-wsgi.conf
-#-------------------------------------------------------------------------------
-
-SetEnv ROSE_HOME /path/to/rose
-SetEnv ROSE_NS rosa
-SetEnv ROSE_UTIL ws
-
-WSGIPythonPath /path/to/rose/lib/python
-WSGIScriptAlias /rosie /path/to/rose/lib/python/rosie/ws.py
+prove -r $(dirname $0) "$@"

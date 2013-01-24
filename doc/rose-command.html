@@ -83,6 +83,10 @@
 
       <dd>(=config-edit)</dd>
 
+      <dt><a href="#rose-env-cat">rose env-cat</a></dt>
+
+      <dd>Substitute environment variables in input files and print.</dd>
+
       <dt><a href="#rose-host-select">rose host-select</a></dt>
 
       <dd>Select a host from a set of groups or names by load or by
@@ -295,6 +299,11 @@
     <h3>ENVIRONMENT</h3>
 
     <dl>
+      <dt><kbd>optional ROSE_APP_OPT_CONF_KEYS</kbd></dt>
+
+      <dd>Each KEY in this space delimited list switches on an optional
+      configuration.</dd>
+
       <dt><kbd>optional ROSE_FILE_INSTALL_ROOT</kbd></dt>
 
       <dd>If specified, change to the specified directory to install files.</dd>
@@ -620,6 +629,40 @@
     <h2 id="rose-edit">rose edit</h2>
 
     <p>See <a href="#rose-config-edit">rose config-edit</a>.</p>
+
+    <h2 id="rose-env-cat">rose env-cat</h2>
+
+    <h3>NAME</h3>
+
+    <p><kbd>rose env-cat</kbd></p>
+
+    <h3>SYNOPSIS</h3>
+
+    <p><kbd>rose env-cat [OPTIONS] [FILE ...]</kbd></p>
+
+    <h3>DESCRIPTION</h3>
+
+    <p>Substitute environment variables in input files and print.</p>
+
+    <p>If no argument is specified, read from <var>STDIN</var>. One
+    <var>FILE</var> argument may be <kbd>-</kbd>, which means read from
+    <var>STDIN</var>.</p>
+
+    <p>The command will look for <kbd>$NAME</kbd> or <kbd>${NAME}</kbd> syntax
+    and substitute them with the value of the environment variable
+    <var>NAME</var>. A backslash in front of the syntax, e.g. <kbd>\$NAME</kbd>
+    or <kbd>\${NAME}</kbd> will escape the substitution.</p>
+
+    <h3>OPTIONS</h3>
+
+    <dl>
+      <dt><kbd>--unbound=STRING</kbd>, <kbd>--undef=STRING</kbd></dt>
+
+      <dd>The command will normally fail on unbound (or undefined) variables.
+      If this option is specified, the command will substitute an unbound
+      variable with the value of <var>STRING</var>, (which can be an empty
+      string), instead of failing.</dd>
+    </dl>
 
     <h2 id="rose-host-select">rose host-select</h2>
 
@@ -1292,11 +1335,11 @@
 
       <dt><kbd>--reload</kbd></dt>
 
-      <dd>Shorthand for <kbd>--run=reload</kdb>.</dd>
+      <dd>Shorthand for <kbd>--run=reload</kbd>.</dd>
 
       <dt><kbd>--restart</kbd></dt>
 
-      <dd>Shorthand for --run=restart.</dd>
+      <dd>Shorthand for <kbd>--run=restart</kbd>.</dd>
 
       <dt><kbd>--run=reload|restart|run</kbd></dt>
 
@@ -1320,6 +1363,11 @@
 
       <dd>The name of the host where the <kbd>rose suite-run</kbd> command was
       invoked.</dd>
+
+      <dt><kbd>optional ROSE_SUITE_OPT_CONF_KEYS</kbd></dt>
+
+      <dd>Each KEY in this space delimited list switches on an optional
+      configuration.</dd>
     </dl>
 
     <h3>JINJA2</h3>
