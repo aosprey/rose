@@ -305,7 +305,7 @@ def load_meta_config(config, directory=None, error_handler=None):
     if error_handler is None:
         error_handler = _report_error
     meta_config = rose.config.ConfigNode()
-    meta_list = ['etc/metadata/all/' + rose.META_CONFIG_NAME]
+    meta_list = ['rose-all/' + rose.META_CONFIG_NAME]
     config_meta_path, warning = load_meta_path(config, directory)
     if warning is not None:
         error_handler(text=warning)
@@ -317,15 +317,16 @@ def load_meta_config(config, directory=None, error_handler=None):
     opt_node = config.get([rose.CONFIG_SECT_TOP,
                            rose.CONFIG_OPT_META_TYPE], no_ignore=True)
     ignore_meta_error = opt_node is None
+    config_loader = rose.config.ConfigLoader()
     for meta_key in meta_list:
         try:
             meta_path = locator.locate(meta_key)
         except rose.resource.ResourceError as e:
             if not ignore_meta_error:
-                error_handler(text=ERROR_LOAD_META_PATH.format(meta_path))
+                error_handler(text=ERROR_LOAD_META_PATH.format(meta_key))
         else:
             try:
-                meta_config = rose.config.load(meta_path, meta_config)
+                config_loader.load_with_opts(meta_path, meta_config)
             except rose.config.ConfigSyntaxError as e:
                 error_handler(text=str(e))
     return meta_config
@@ -704,7 +705,8 @@ def parse_macro_mode_args(mode="macro", argv=None):
         sys.stderr.write(ERROR_LOAD_CONFIG_DIR.format(opts.conf_dir))
         return None
     # Load the configuration and the metadata macros.
-    app_config = rose.config.load(config_file_path)
+    config_loader = rose.config.ConfigLoader()
+    app_config = config_loader(config_file_path)
     standard_format_config(app_config)
 
     # Load meta config if it exists.
@@ -720,7 +722,7 @@ def parse_macro_mode_args(mode="macro", argv=None):
     else:
         meta_config_path = os.path.join(meta_path, rose.META_CONFIG_NAME)
         if os.path.isfile(meta_config_path):
-            meta_config = rose.config.load(meta_config_path)
+            meta_config = config_loader.load_with_opts(meta_config_path)
     return app_config, meta_config, config_name, args, opts
 
 
