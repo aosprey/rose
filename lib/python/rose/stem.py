@@ -27,7 +27,7 @@ from rose.fs_util import FileSystemUtil
 from rose.opt_parse import RoseOptionParser
 from rose.popen import RosePopener, RosePopenError
 from rose.reporter import Reporter, Event
-from rose.run import SuiteRunner
+from rose.suite_run import SuiteRunner
 
 DEFAULT_TEST_DIR = 'rose-stem'
 OPTIONS = ['group', 'source', 'task', ]
@@ -228,7 +228,7 @@ class StemRunner(object):
             dummy, basedir, dum2, dum3 = self._ascertain_project(os.getcwd())
             
         suitedir = os.path.join(basedir, DEFAULT_TEST_DIR)
-        suitefile = os.path.join(suitedir, rose.TOP_CONFIG_NAME)
+        suitefile = os.path.join(suitedir, "rose-suite.conf")
 
         if not os.path.isfile(suitefile):
             raise RoseSuiteConfNotFoundException(suitedir)
