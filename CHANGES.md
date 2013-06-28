@@ -9,7 +9,7 @@ for a full listing of issues for each release.
 
 This release of Rose will work with cylc 5.3.0.
 
-### Highlight Changes
+### Highlighted Changes
 
 Changes that have significant impact on user experience.
 
@@ -60,12 +60,18 @@ now be used in either command. Note, however, if `rose task-env` is used before
 command. This may some minor change in behaviour of some existing suites as
 `PATH` would be modified by `rose task-env`.
 
-\#661: rose metadata-check: new command to validate configuration metadata.
+\#661: rose metadata-check: new command to validate configuration metadata. 
+Integrated into rose config-edit start-up checking.
 
 ### Other Changes
 
 Lots of bug fixes and enhancements, and documentation improvements.
 The following are worth mentioning:
+
+\#758: rosie go: home view now has `roses:/` displayed in the address bar for
+the home view.
+
+\#753: rose documentation: added advice for delivery of training courses.
 
 \#712: rose config-edit: can show variable descriptions and help in-page. 
 Descriptions are shown by default. Customisable formatting.
@@ -111,7 +117,7 @@ to specify a command file to use with the MPI launcher.
 
 This release of Rose works with cylc 5.2.0.
 
-### Highlight Changes
+### Highlighted Changes
 
 Changes that have significant impact on user experience.
 
@@ -169,7 +175,7 @@ User guide: added many new tutorials.
 
 This is the 3rd release of Rose.
 
-### Highlight Changes
+### Highlighted Changes
 
 Changes that have significant impact on user experience.
 
@@ -199,7 +205,7 @@ header.
 
 This is the 2nd release of Rose. We hope you find it useful.
 
-### Highlight Changes
+### Highlighted Changes
 
 Changes that have significant impact on user experience.
 
